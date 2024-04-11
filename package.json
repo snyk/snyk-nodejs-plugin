@@ -43,7 +43,7 @@
     "lodash.sortby": "^4.7.0",
     "micromatch": "4.0.2",
     "snyk-nodejs-lockfile-parser": "1.52.11",
-    "snyk-resolve-deps": "4.7.3"
+    "snyk-resolve-deps": "4.8.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
