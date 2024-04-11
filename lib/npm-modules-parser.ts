@@ -5,6 +5,7 @@ import * as baseDebug from 'debug';
 import { isEmpty } from 'lodash';
 import { Options } from './types';
 import { getFileContents } from './utils';
+import { PkgTree } from 'snyk-nodejs-lockfile-parser';
 
 const debug = baseDebug('snyk-nodejs-plugin');
 
@@ -12,7 +13,7 @@ export async function parse(
   root: string,
   targetFile: string,
   options: Options,
-): Promise<resolveNodeDeps.PackageExpanded> {
+): Promise<PkgTree> {
   if (targetFile.endsWith('yarn.lock')) {
     options.file =
       options.file && options.file.replace('yarn.lock', 'package.json');
