@@ -122,7 +122,6 @@ workflows:
           name: Perform security scans for PRs
           context:
             - open_source-managed
-          <<: *filters_branches_ignore_main
       - lint:
           name: Lint
           context: nodejs-install
