@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist",
+      "pretty": true,
+      "target": "es2019",
+      "module": "commonjs",
+      "sourceMap": true,
+      "declaration": true,
+      "strict": true,
+      "noImplicitAny": false,
+      "noUnusedLocals": true,
+      "noImplicitReturns": true
+    },
+    "include": [
+      "./lib/*"
+, "lib/workspaces/yarn-workspaces-parser.ts", "lib/workspaces/npm-workspaces-parser.ts"    ]
+  }

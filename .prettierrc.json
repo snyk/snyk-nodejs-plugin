@@ -1,0 +1,15 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 40,
+        "parser": "json",
+        "bracketSpacing": true,
+        "trailingComma": "none"
+      }
+    }
+  ]
+}
