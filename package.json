@@ -1,0 +1,59 @@
+{
+  "name": "snyk-nodejs-plugin",
+  "description": "Snyk CLI NodeJS plugin",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "jest --coverage --runInBand",
+    "lint": "eslint --color --cache '{lib,test}/**/*.{js,ts}' && prettier --check '{lib,test}/**/*.{js,ts}'",
+    "format": "prettier --write '{lib,test}/**/*.{js,ts,json}'",
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snyk/snyk-nodejs-plugin.git"
+  },
+  "keywords": [
+    "snyk",
+    "nodejs"
+  ],
+  "author": "snyk.io",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^18"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "bugs": {
+    "url": "https://github.com/snyk/snyk-nodejs-plugin/issues"
+  },
+  "homepage": "https://github.com/snyk/snyk-nodejs-plugin#readme",
+  "dependencies": {
+    "@snyk/cli-interface": "^2.13.0",
+    "@snyk/dep-graph": "^2.7.4",
+    "debug": "^4.3.4",
+    "lodash": "^4.17.21",
+    "lodash.groupby": "^4.6.0",
+    "lodash.isempty": "^4.4.0",
+    "lodash.sortby": "^4.7.0",
+    "micromatch": "4.0.2",
+    "snyk-nodejs-lockfile-parser": "1.52.11",
+    "snyk-resolve-deps": "4.7.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.5",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "eslint": "^8.48.0",
+    "jest": "^29.6.2",
+    "prettier": "^3.0.3",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.1.6"
+  }
+}
