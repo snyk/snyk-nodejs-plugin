@@ -1,14 +1,13 @@
 import * as baseDebug from 'debug';
 import * as pathUtil from 'path';
-import { sortBy } from 'lodash.sortby';
-import { groupBy } from 'lodash.groupby';
+import { sortBy, groupBy } from 'lodash';
 import * as micromatch from 'micromatch';
 
 const debug = baseDebug('snyk-yarn-workspaces');
 import * as lockFileParser from 'snyk-nodejs-lockfile-parser';
-import { MultiProjectResultCustom, ScannedProjectCustom } from './types';
-import { getFileContents } from './utils';
-import { NoSupportedManifestsFoundError } from './errors';
+import { MultiProjectResultCustom, ScannedProjectCustom } from '../types';
+import { getFileContents } from '../utils';
+import { NoSupportedManifestsFoundError } from '../errors';
 import { DepGraph } from '@snyk/dep-graph';
 
 interface YarnWorkspacesMap {
@@ -78,7 +77,6 @@ export async function processYarnWorkspaces(
     .map((p) => ({ path: p, ...pathUtil.parse(p) }))
     .filter((res) => ['package.json', 'yarn.lock'].includes(res.base));
   const sorted = sortBy(mappedAndFiltered, 'dir');
-  const grouped = groupBy(sorted, 'dir');
 
   const yarnTargetFiles: {
     [dir: string]: Array<{
@@ -86,7 +84,7 @@ export async function processYarnWorkspaces(
       base: string;
       dir: string;
     }>;
-  } = grouped;
+  } = groupBy(sorted, 'dir');
 
   debug(`Processing potential Yarn workspaces (${targetFiles.length})`);
   if (settings.yarnWorkspaces && Object.keys(yarnTargetFiles).length === 0) {

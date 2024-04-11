@@ -1,14 +1,13 @@
 import * as baseDebug from 'debug';
 import * as pathUtil from 'path';
-import { sortBy } from 'lodash.sortby';
-import { groupBy } from 'lodash.groupby';
+import { sortBy, groupBy } from 'lodash';
 import * as micromatch from 'micromatch';
 
 const debug = baseDebug('snyk-npm-workspaces');
 import * as lockFileParser from 'snyk-nodejs-lockfile-parser';
-import { MultiProjectResultCustom, ScannedProjectCustom } from './types';
-import { getFileContents } from './utils';
-import { NoSupportedManifestsFoundError } from './errors';
+import { MultiProjectResultCustom, ScannedProjectCustom } from '../types';
+import { getFileContents } from '../utils';
+import { NoSupportedManifestsFoundError } from '../errors';
 
 interface NpmWorkspacesMap {
   [packageJsonName: string]: {
@@ -75,7 +74,6 @@ export async function processNpmWorkspaces(
     .map((p) => ({ path: p, ...pathUtil.parse(p) }))
     .filter((res) => ['package.json', 'package-lock.json'].includes(res.base));
   const sorted = sortBy(mappedAndFiltered, 'dir');
-  const grouped = groupBy(sorted, 'dir');
 
   const npmTargetFiles: {
     [dir: string]: Array<{
@@ -83,7 +81,7 @@ export async function processNpmWorkspaces(
       base: string;
       dir: string;
     }>;
-  } = grouped;
+  } = groupBy(sorted, 'dir');
 
   debug(`Processing potential Npm workspaces (${targetFiles.length})`);
   if (settings.yarnWorkspaces && Object.keys(npmTargetFiles).length === 0) {

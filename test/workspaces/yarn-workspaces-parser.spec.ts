@@ -1,4 +1,8 @@
-import { packageJsonBelongsToWorkspace } from '../lib/yarn-workspaces-parser';
+import {
+  packageJsonBelongsToWorkspace,
+  processYarnWorkspaces,
+} from '../../lib/workspaces/yarn-workspaces-parser';
+import * as path from 'path';
 
 const yarnWorkspacesMap = {
   'snyk/test/acceptance/workspaces/yarn-workspace-out-of-sync/package.json': {
@@ -149,5 +153,33 @@ describe('packageJsonBelongsToWorkspace Windows', () => {
         workspaceRoot,
       ),
     ).toBeFalsy();
+  });
+
+  describe('Processing returns dep graph for multiple workspaces for npm, yarn, pnpm', () => {
+    it('should build valid dep graphs for the yarn projects detected as part of a workspace', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        '..',
+        'fixtures',
+        'workspace-multi-type',
+      );
+      process.chdir(fixturePath);
+      const currentDir = process.cwd();
+
+      const result = await processYarnWorkspaces(currentDir, {}, [
+        `${currentDir}/npm-workspace/package-lock.json`,
+        `${currentDir}/npm-workspace/packages/a/package.json`,
+        `${currentDir}/npm-workspace/packages/b/package.json`,
+        `${currentDir}/yarn-workspace/yarn.lock`,
+        `${currentDir}/yarn-workspace/packages/pkg-a/package.json`,
+        `${currentDir}/yarn-workspace/packages/pkg-b/package.json`,
+        `${currentDir}/pnpm-workspace/pnpm-lock.yaml`,
+        `${currentDir}/pnpm-workspace/packages/pkg-a/package.json`,
+        `${currentDir}/pnpm-workspace/packages/pkg-b/package.json`,
+      ]);
+      expect(result.plugin.name).toEqual('snyk-nodejs-yarn-workspaces');
+      expect(result.scannedProjects.length).toEqual(3);
+      expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+    });
   });
 });
