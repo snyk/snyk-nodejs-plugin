@@ -115,8 +115,6 @@ jobs:
       - image: node:18
     steps:
       - checkout
-      - install_node_npm:
-          node_version: << parameters.node_version >>
       - install_deps
       - run:
           name: Run build
