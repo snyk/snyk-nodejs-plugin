@@ -19,6 +19,11 @@ export async function parse(
       options.file && options.file.replace('yarn.lock', 'package.json');
   }
 
+  if (targetFile.endsWith('pnpm-lock.yaml')) {
+    options.file =
+      options.file && options.file.replace('pnpm-lock.yaml', 'package.json');
+  }
+
   // package-lock.json falls back to package.json (used in wizard code)
   if (targetFile.endsWith('package-lock.json')) {
     options.file =
@@ -64,7 +69,6 @@ export async function parse(
         `without dependencies.\nPlease run '${packageManager} install' first.`,
     );
   }
-
   return resolveNodeDeps(
     root,
     Object.assign({}, options, { noFromArrays: true }),

@@ -11,7 +11,7 @@ Snyk helps you find, fix and monitor for known vulnerabilities in your dependenc
 
 ## Snyk Node.js Plugin
 
-This plugin provides dependency metadata for npm and Yarn projects and workspaces. It is an internal component intended for use by our [CLI tool](https://github.com/snyk/snyk).
+This plugin provides dependency metadata for npm, Yarn and pnpm projects and workspaces. It is an internal component intended for use by our [CLI tool](https://github.com/snyk/snyk).
 
 # Support
 
@@ -33,6 +33,7 @@ This plugin provides dependency metadata for npm and Yarn projects and workspace
 | ----------- | --------- |
 | npm         | ✅        |
 | Yarn        | ✅        |
+| Pnpm        | ✅        |
 
 ## Supported Node versions
 

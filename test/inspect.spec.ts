@@ -11,6 +11,18 @@ describe('inspect', () => {
   describe('lockfile-based projects', () => {
     it.each([
       {
+        packageManager: 'pnpm',
+        lockFileVersion: '5',
+        fixture: 'simple-app',
+        targetFile: 'pnpm-lock.yaml',
+      },
+      {
+        packageManager: 'pnpm',
+        lockFileVersion: '6',
+        fixture: 'simple-app',
+        targetFile: 'pnpm-lock.yaml',
+      },
+      {
         packageManager: 'npm',
         lockFileVersion: '2',
         fixture: 'simple-app',

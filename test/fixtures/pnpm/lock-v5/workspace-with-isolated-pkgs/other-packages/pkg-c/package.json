@@ -1,0 +1,7 @@
+{
+    "name": "pkg-c",
+    "version": "1.0.0",
+    "dependencies": {
+      "ms": "2.1.2"
+    }
+  }

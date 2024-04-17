@@ -37,3 +37,9 @@ export interface MultiProjectResultCustom
   scannedProjects: ScannedProjectCustom[];
   failedResults?: FailedProjectScanError[];
 }
+
+export interface PnpmWorkspacesMap {
+  [packageJsonName: string]: {
+    workspaces: string[];
+  };
+}
