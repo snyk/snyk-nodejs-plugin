@@ -112,14 +112,18 @@ jobs:
   release:
     <<: *defaults
     docker:
-      - image: cimg/node:<< parameters.node_version >>
+      - image: node:18
     steps:
       - checkout
+      - install_node_npm:
+          node_version: << parameters.node_version >>
       - install_deps
-      - run: sudo npm i -g semantic-release@17 @semantic-release/exec pkg
+      - run:
+          name: Run build
+          command: npm run build
       - run:
           name: Publish to GitHub
-          command: npx semantic-release
+          command: npx semantic-release@21
 
 workflows:
   version: 2
@@ -160,8 +164,11 @@ workflows:
           <<: *filters_branches_ignore_main
       - release:
           name: Release
-          context: nodejs-app-release
-          node_version: "18.19.1"
+          context: nodejs-lib-release
+          requires:
+            - Scan repository for secrets
+            - Perform security scans for PRs
+            - Lint
           filters:
             branches:
               only:
