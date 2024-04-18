@@ -152,7 +152,7 @@ export async function processPnpmWorkspaces(
       );
       const project: ScannedProjectCustom = {
         packageManager: 'pnpm',
-        targetFile: pathUtil.relative(rootDir, packageJson.fileName),
+        targetFile: pathUtil.relative(root, packageJson.fileName),
         depGraph: res as any,
         plugin: {
           name: 'snyk-nodejs-lockfile-parser',
