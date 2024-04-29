@@ -41,7 +41,7 @@ export async function buildDepGraph(
         lockFileContents,
         {
           includeDevDeps: options.includeDevDeps,
-          includeOptionalDeps: options.includeOptionalDeps,
+          includeOptionalDeps: options.includeOptionalDeps || true,
           pruneWithinTopLevelDeps: true,
           strictOutOfSync: options.strictOutOfSync,
         },

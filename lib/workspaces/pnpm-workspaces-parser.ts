@@ -36,7 +36,7 @@ function computeProjectVersionMaps(root: string, targetFiles) {
       const projectVersion = parsedPkgJson.version;
       projectsVersionMap[
         normalizeFilePath(pathUtil.relative(root, directory))
-      ] = projectVersion;
+      ] = projectVersion || 'undefined';
     } catch (err: any) {
       debug(
         `Error getting version for project: ${packageJsonFileName}. ERROR: ${err}`,
@@ -132,7 +132,7 @@ export async function processPnpmWorkspaces(
         pnpmLock.content,
         {
           includeDevDeps: settings.dev || false,
-          includeOptionalDeps: settings.optional || false,
+          includeOptionalDeps: settings.optional || true,
           pruneWithinTopLevelDeps: true,
           strictOutOfSync:
             settings.strictOutOfSync === undefined

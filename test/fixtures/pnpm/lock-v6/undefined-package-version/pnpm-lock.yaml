@@ -1,0 +1,33 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      a:
+        specifier: workspace:*
+        version: link:packages/pkg-a
+
+  packages/pkg-a:
+    dependencies:
+      node-uuid:
+        specifier: 1.4.0
+        version: 1.4.0
+      qs:
+        specifier: 0.0.6
+        version: 0.0.6
+
+packages:
+
+  /node-uuid@1.4.0:
+    resolution: {integrity: sha512-Vns3Mj1WBYNwPchf2T/pt9q2GUpM97JvLekAkAwWYX1H2kIxYQ+jUb3GWmaNRboP5XoS3p3nxptIv00I+cOtLg==}
+    deprecated: Use uuid module instead
+    dev: false
+
+  /qs@0.0.6:
+    resolution: {integrity: sha512-1i8kQcg7L3IYwt9uLfTfAGucLE+wrp7hB+xEGbM0yFp0tbsykoXmSyi+AWn0qdglKMdPzIrzS6w5Ack0ZvkfqQ==}
+    dev: false

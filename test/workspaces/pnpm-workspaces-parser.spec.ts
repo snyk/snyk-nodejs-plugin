@@ -14,35 +14,91 @@ describe('process pnpm workspaces', () => {
         packageManager: 'pnpm',
         lockFileVersion: '5',
         fixture: 'workspace-with-isolated-pkgs',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
       },
       {
         packageManager: 'pnpm',
         lockFileVersion: '6',
         fixture: 'workspace-with-isolated-pkgs',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
       },
       {
         packageManager: 'pnpm',
         lockFileVersion: '5',
         fixture: 'workspace-with-cross-ref',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
       },
       {
         packageManager: 'pnpm',
         lockFileVersion: '6',
         fixture: 'workspace-with-cross-ref',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
       },
       {
         packageManager: 'pnpm',
         lockFileVersion: '5',
         fixture: 'workspace-empty-config-file',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
       },
       {
         packageManager: 'pnpm',
         lockFileVersion: '6',
         fixture: 'workspace-with-cross-ref',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
+      },
+      {
+        packageManager: 'pnpm',
+        lockFileVersion: '5',
+        fixture: 'undefined-package-version',
+        projects: 2,
+        targetFiles: ['pnpm-lock.yaml', 'packages/pkg-a/package.json'],
+      },
+      {
+        packageManager: 'pnpm',
+        lockFileVersion: '6',
+        fixture: 'undefined-package-version',
+        projects: 2,
+        targetFiles: ['pnpm-lock.yaml', 'packages/pkg-a/package.json'],
       },
     ])(
       'should build valid dep graph for $packageManager, lockfile version = $lockFileVersion',
-      async ({ packageManager, lockFileVersion, fixture }) => {
+      async ({
+        packageManager,
+        lockFileVersion,
+        fixture,
+        projects,
+        targetFiles,
+      }) => {
         const fixturePath = path.resolve(
           __dirname,
           '..',
@@ -54,13 +110,17 @@ describe('process pnpm workspaces', () => {
         process.chdir(fixturePath);
         const currentDir = process.cwd();
 
-        const result = await processPnpmWorkspaces(currentDir, {}, [
-          `${currentDir}/pnpm-lock.yaml`,
-          `${currentDir}/packages/pkg-a/package.json`,
-          `${currentDir}/packages/pkg-b/package.json`,
-        ]);
+        const resolvedTargetFiles = targetFiles.map(
+          (file) => `${currentDir}/${file}`,
+        );
+
+        const result = await processPnpmWorkspaces(
+          currentDir,
+          {},
+          resolvedTargetFiles,
+        );
         expect(result.plugin.name).toEqual('snyk-nodejs-pnpm-workspaces');
-        expect(result.scannedProjects.length).toEqual(3);
+        expect(result.scannedProjects.length).toEqual(projects);
         expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
       },
     );
