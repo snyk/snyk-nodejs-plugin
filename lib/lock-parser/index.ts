@@ -47,7 +47,8 @@ export async function parse(
     lockfileVersion === NodeLockfileVersion.NpmLockV2 ||
     lockfileVersion === NodeLockfileVersion.NpmLockV3 ||
     lockfileVersion === NodeLockfileVersion.PnpmLockV5 ||
-    lockfileVersion === NodeLockfileVersion.PnpmLockV6
+    lockfileVersion === NodeLockfileVersion.PnpmLockV6 ||
+    lockfileVersion === NodeLockfileVersion.PnpmLockV9
   ) {
     return await buildDepGraph(
       root,

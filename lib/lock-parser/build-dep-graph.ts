@@ -36,6 +36,7 @@ export async function buildDepGraph(
   switch (lockfileVersion) {
     case NodeLockfileVersion.PnpmLockV5:
     case NodeLockfileVersion.PnpmLockV6:
+    case NodeLockfileVersion.PnpmLockV9:
       return await lockFileParser.parsePnpmProject(
         manifestFileContents,
         lockFileContents,
