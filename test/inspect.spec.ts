@@ -23,6 +23,12 @@ describe('inspect', () => {
         targetFile: 'pnpm-lock.yaml',
       },
       {
+        packageManager: 'pnpm',
+        lockFileVersion: '9',
+        fixture: 'simple-app',
+        targetFile: 'pnpm-lock.yaml',
+      },
+      {
         packageManager: 'npm',
         lockFileVersion: '2',
         fixture: 'simple-app',

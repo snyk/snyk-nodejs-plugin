@@ -34,6 +34,17 @@ describe('process pnpm workspaces', () => {
       },
       {
         packageManager: 'pnpm',
+        lockFileVersion: '9',
+        fixture: 'workspace-with-isolated-pkgs',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
+      },
+      {
+        packageManager: 'pnpm',
         lockFileVersion: '5',
         fixture: 'workspace-with-cross-ref',
         projects: 3,
@@ -46,6 +57,17 @@ describe('process pnpm workspaces', () => {
       {
         packageManager: 'pnpm',
         lockFileVersion: '6',
+        fixture: 'workspace-with-cross-ref',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
+      },
+      {
+        packageManager: 'pnpm',
+        lockFileVersion: '9',
         fixture: 'workspace-with-cross-ref',
         projects: 3,
         targetFiles: [
@@ -78,6 +100,17 @@ describe('process pnpm workspaces', () => {
       },
       {
         packageManager: 'pnpm',
+        lockFileVersion: '9',
+        fixture: 'workspace-with-cross-ref',
+        projects: 3,
+        targetFiles: [
+          'pnpm-lock.yaml',
+          'packages/pkg-a/package.json',
+          'packages/pkg-b/package.json',
+        ],
+      },
+      {
+        packageManager: 'pnpm',
         lockFileVersion: '5',
         fixture: 'undefined-package-version',
         projects: 2,
@@ -86,6 +119,13 @@ describe('process pnpm workspaces', () => {
       {
         packageManager: 'pnpm',
         lockFileVersion: '6',
+        fixture: 'undefined-package-version',
+        projects: 2,
+        targetFiles: ['pnpm-lock.yaml', 'packages/pkg-a/package.json'],
+      },
+      {
+        packageManager: 'pnpm',
+        lockFileVersion: '9',
         fixture: 'undefined-package-version',
         projects: 2,
         targetFiles: ['pnpm-lock.yaml', 'packages/pkg-a/package.json'],
