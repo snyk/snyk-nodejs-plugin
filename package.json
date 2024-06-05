@@ -41,8 +41,8 @@
     "lodash.groupby": "^4.6.0",
     "lodash.isempty": "^4.4.0",
     "lodash.sortby": "^4.7.0",
-    "micromatch": "4.0.2",
-    "snyk-nodejs-lockfile-parser": "^1.56.0",
+    "micromatch": "4.0.7",
+    "snyk-nodejs-lockfile-parser": "^1.56.1",
     "snyk-resolve-deps": "4.8.0"
   },
   "devDependencies": {
