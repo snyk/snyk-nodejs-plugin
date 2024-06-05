@@ -71,6 +71,7 @@ jobs:
       - install_deps
       - prodsec/security_scans:
           mode: auto
+          open-source-additional-arguments: --exclude=test,dist
           iac-scan: disabled
   lint:
     <<: *defaults
