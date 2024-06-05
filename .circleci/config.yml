@@ -72,6 +72,7 @@ jobs:
       - prodsec/security_scans:
           mode: auto
           open-source-additional-arguments: --exclude=test,dist
+          iac-scan: disabled
   lint:
     <<: *defaults
     docker:
@@ -133,6 +134,10 @@ workflows:
           context:
             - snyk-bot-slack
           channel: os-team-managed-alerts
+          filters:
+            branches:
+              ignore:
+                - main
       - security-scans:
           name: Perform security scans for PRs
           context:
