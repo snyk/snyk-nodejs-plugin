@@ -1,3 +1,4 @@
+import { InvalidUserInputError } from 'snyk-nodejs-lockfile-parser';
 import { inspect } from '../lib/index';
 import * as path from 'path';
 
@@ -64,5 +65,29 @@ describe('inspect', () => {
         expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
       },
     );
+
+    it('should throw error trying to scan a pnpm workspace as a simple file', async () => {
+      const packageManager = 'pnpm',
+        lockFileVersion = '9',
+        fixture = 'workspace-with-cross-ref',
+        targetFile = 'pnpm-lock.yaml';
+      const fixturePath = path.resolve(
+        __dirname,
+        'fixtures',
+        packageManager,
+        `lock-v${lockFileVersion}`,
+        fixture,
+      );
+      process.chdir(fixturePath);
+
+      await expect(() => inspect('.', targetFile, {})).rejects.toThrow(
+        new InvalidUserInputError(
+          'Both `pnpm-lock.yaml` and `pnpm-workspace.yaml` were found in ' +
+            fixturePath +
+            '.\n' +
+            'Please run your command again specifying `--all-projects` flag.',
+        ),
+      );
+    });
   });
 });

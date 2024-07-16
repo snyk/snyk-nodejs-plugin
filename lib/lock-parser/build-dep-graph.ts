@@ -33,10 +33,24 @@ export async function buildDepGraph(
   const manifestFileContents = fs.readFileSync(manifestFileFullPath, 'utf-8');
   const lockFileContents = fs.readFileSync(lockFileFullPath, 'utf-8');
 
+  const workspaceRootPath = path.parse(lockFileFullPath).dir;
+  const workspaceFileFullPath = path.resolve(
+    workspaceRootPath,
+    'pnpm-workspace.yaml',
+  );
+
   switch (lockfileVersion) {
     case NodeLockfileVersion.PnpmLockV5:
     case NodeLockfileVersion.PnpmLockV6:
     case NodeLockfileVersion.PnpmLockV9:
+      if (fs.existsSync(workspaceFileFullPath)) {
+        throw new InvalidUserInputError(
+          'Both `pnpm-lock.yaml` and `pnpm-workspace.yaml` were found in ' +
+            workspaceRootPath +
+            '.\n' +
+            'Please run your command again specifying `--all-projects` flag.',
+        );
+      }
       return await lockFileParser.parsePnpmProject(
         manifestFileContents,
         lockFileContents,
