@@ -39,6 +39,6 @@ This plugin provides dependency metadata for npm, Yarn and pnpm projects and wor
 
 | Node | Supported |
 | ---- | --------- |
-| 14   | ✅        |
-| 16   | ✅        |
 | 18   | ✅        |
+| 20   | ✅        |
+| 22   | ✅        |
