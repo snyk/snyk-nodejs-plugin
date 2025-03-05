@@ -42,7 +42,7 @@
     "lodash.isempty": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "micromatch": "4.0.8",
-    "snyk-nodejs-lockfile-parser": "1.58.18",
+    "snyk-nodejs-lockfile-parser": "1.58.19",
     "snyk-resolve-deps": "4.8.0"
   },
   "overrides": {

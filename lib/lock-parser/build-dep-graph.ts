@@ -57,6 +57,7 @@ export async function buildDepGraph(
         {
           includeDevDeps: options.includeDevDeps,
           includeOptionalDeps: options.includeOptionalDeps || true,
+          includePeerDeps: true,
           pruneWithinTopLevelDeps: true,
           strictOutOfSync: options.strictOutOfSync,
         },
