@@ -1,12 +1,12 @@
 import * as debugModule from 'debug';
-import * as pathUtil from 'path';
 import * as fs from 'fs';
-
-const debug = debugModule('snyk-pnpm-workspaces');
+import * as pathUtil from 'path';
 import * as lockFileParser from 'snyk-nodejs-lockfile-parser';
+import { ScannedNodeProject } from 'snyk-nodejs-lockfile-parser/dist/dep-graph-builders/types';
 import { MultiProjectResultCustom, ScannedProjectCustom } from '../types';
 import { sortTargetFiles } from './workspace-utils';
-import { ScannedNodeProject } from 'snyk-nodejs-lockfile-parser/dist/dep-graph-builders/types';
+
+const debug = debugModule('snyk-pnpm-workspaces');
 
 export async function processPnpmWorkspaces(
   root: string,
@@ -14,6 +14,7 @@ export async function processPnpmWorkspaces(
     strictOutOfSync?: boolean;
     dev?: boolean;
     optional?: boolean;
+    exclude?: string;
   },
   targetFiles: string[],
 ): Promise<MultiProjectResultCustom> {
@@ -51,6 +52,7 @@ export async function processPnpmWorkspaces(
           settings.strictOutOfSync === undefined
             ? true
             : settings.strictOutOfSync,
+        exclude: settings.exclude,
       });
     result.scannedProjects = result.scannedProjects.concat(
       scannedProjects as ScannedProjectCustom[],
