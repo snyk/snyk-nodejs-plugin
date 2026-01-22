@@ -6,10 +6,8 @@
     "dependencies": {
       "express": "4.12"
     },
-    "workspaces": {
-      "packages": [
-        "packages/a",
-        "packages/b"
-      ]
-    }
+    "workspaces": [
+      "packages/a",
+      "packages/b"
+    ]
   }

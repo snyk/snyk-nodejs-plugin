@@ -9,7 +9,7 @@ import { PkgTree } from 'snyk-nodejs-lockfile-parser';
 
 const debug = baseDebug('snyk-nodejs-plugin');
 
-export async function parse(
+export function parse(
   root: string,
   targetFile: string,
   options: Options,
