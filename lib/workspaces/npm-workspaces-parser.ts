@@ -65,6 +65,7 @@ export async function processNpmWorkspaces(
     strictOutOfSync?: boolean;
     dev?: boolean;
     yarnWorkspaces?: boolean;
+    showNpmScope?: boolean;
   },
   targetFiles: string[],
 ): Promise<MultiProjectResultCustom> {
@@ -146,6 +147,7 @@ export async function processNpmWorkspaces(
           strictOutOfSync: settings.strictOutOfSync || false,
           includeOptionalDeps: false,
           pruneCycles: true,
+          showNpmScope: settings.showNpmScope,
         },
       );
 

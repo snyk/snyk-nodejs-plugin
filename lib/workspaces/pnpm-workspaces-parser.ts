@@ -15,6 +15,7 @@ export async function processPnpmWorkspaces(
     dev?: boolean;
     optional?: boolean;
     exclude?: string;
+    showNpmScope?: boolean;
   },
   targetFiles: string[],
 ): Promise<MultiProjectResultCustom> {
@@ -53,6 +54,7 @@ export async function processPnpmWorkspaces(
             ? true
             : settings.strictOutOfSync,
         exclude: settings.exclude,
+        showNpmScope: settings.showNpmScope,
       });
     result.scannedProjects = result.scannedProjects.concat(
       scannedProjects as ScannedProjectCustom[],

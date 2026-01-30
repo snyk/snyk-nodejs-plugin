@@ -196,4 +196,73 @@ describe('process pnpm workspaces', () => {
       expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
     });
   });
+
+  describe('showNpmScope feature flag forwarding', () => {
+    it('should forward showNpmScope flag when set to true', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        '..',
+        'fixtures',
+        'pnpm',
+        'lock-v9',
+        'workspace-with-isolated-pkgs',
+      );
+      process.chdir(fixturePath);
+      const currentDir = process.cwd();
+
+      const result = await processPnpmWorkspaces(
+        currentDir,
+        { showNpmScope: true },
+        [`${currentDir}/pnpm-lock.yaml`],
+      );
+
+      expect(result.plugin.name).toEqual('snyk-nodejs-pnpm-workspaces');
+      expect(result.scannedProjects.length).toBeGreaterThanOrEqual(1);
+      expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+    });
+
+    it('should forward showNpmScope flag when set to false', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        '..',
+        'fixtures',
+        'pnpm',
+        'lock-v9',
+        'workspace-with-isolated-pkgs',
+      );
+      process.chdir(fixturePath);
+      const currentDir = process.cwd();
+
+      const result = await processPnpmWorkspaces(
+        currentDir,
+        { showNpmScope: false },
+        [`${currentDir}/pnpm-lock.yaml`],
+      );
+
+      expect(result.plugin.name).toEqual('snyk-nodejs-pnpm-workspaces');
+      expect(result.scannedProjects.length).toBeGreaterThanOrEqual(1);
+      expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+    });
+
+    it('should work correctly when showNpmScope is undefined (backward compatibility)', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        '..',
+        'fixtures',
+        'pnpm',
+        'lock-v9',
+        'workspace-with-isolated-pkgs',
+      );
+      process.chdir(fixturePath);
+      const currentDir = process.cwd();
+
+      const result = await processPnpmWorkspaces(currentDir, {}, [
+        `${currentDir}/pnpm-lock.yaml`,
+      ]);
+
+      expect(result.plugin.name).toEqual('snyk-nodejs-pnpm-workspaces');
+      expect(result.scannedProjects.length).toBeGreaterThanOrEqual(1);
+      expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+    });
+  });
 });

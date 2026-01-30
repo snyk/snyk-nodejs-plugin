@@ -182,4 +182,80 @@ describe('packageJsonBelongsToWorkspace Windows', () => {
       expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
     });
   });
+
+  describe('showNpmScope feature flag forwarding', () => {
+    it('should forward showNpmScope flag when set to true', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        '..',
+        'fixtures',
+        'workspace-multi-type',
+      );
+      process.chdir(fixturePath);
+      const currentDir = process.cwd();
+
+      const result = await processYarnWorkspaces(
+        currentDir,
+        { showNpmScope: true },
+        [
+          `${currentDir}/yarn-workspace/yarn.lock`,
+          `${currentDir}/yarn-workspace/package.json`,
+          `${currentDir}/yarn-workspace/packages/pkg-a/package.json`,
+          `${currentDir}/yarn-workspace/packages/pkg-b/package.json`,
+        ],
+      );
+
+      expect(result.plugin.name).toEqual('snyk-nodejs-yarn-workspaces');
+      expect(result.scannedProjects.length).toBeGreaterThanOrEqual(1);
+      expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+    });
+
+    it('should forward showNpmScope flag when set to false', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        '..',
+        'fixtures',
+        'workspace-multi-type',
+      );
+      process.chdir(fixturePath);
+      const currentDir = process.cwd();
+
+      const result = await processYarnWorkspaces(
+        currentDir,
+        { showNpmScope: false },
+        [
+          `${currentDir}/yarn-workspace/yarn.lock`,
+          `${currentDir}/yarn-workspace/package.json`,
+          `${currentDir}/yarn-workspace/packages/pkg-a/package.json`,
+          `${currentDir}/yarn-workspace/packages/pkg-b/package.json`,
+        ],
+      );
+
+      expect(result.plugin.name).toEqual('snyk-nodejs-yarn-workspaces');
+      expect(result.scannedProjects.length).toBeGreaterThanOrEqual(1);
+      expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+    });
+
+    it('should work correctly when showNpmScope is undefined (backward compatibility)', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        '..',
+        'fixtures',
+        'workspace-multi-type',
+      );
+      process.chdir(fixturePath);
+      const currentDir = process.cwd();
+
+      const result = await processYarnWorkspaces(currentDir, {}, [
+        `${currentDir}/yarn-workspace/yarn.lock`,
+        `${currentDir}/yarn-workspace/package.json`,
+        `${currentDir}/yarn-workspace/packages/pkg-a/package.json`,
+        `${currentDir}/yarn-workspace/packages/pkg-b/package.json`,
+      ]);
+
+      expect(result.plugin.name).toEqual('snyk-nodejs-yarn-workspaces');
+      expect(result.scannedProjects.length).toBeGreaterThanOrEqual(1);
+      expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+    });
+  });
 });
