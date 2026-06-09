@@ -1,0 +1,7 @@
+{
+  "name": "@acme/shared",
+  "version": "9.9.9",
+  "devDependencies": {
+    "ms": "^2.1.3"
+  }
+}

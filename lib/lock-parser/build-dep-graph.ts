@@ -7,6 +7,18 @@ import {
   ProjectParseOptions,
 } from 'snyk-nodejs-lockfile-parser';
 import { DepGraph } from '@snyk/dep-graph';
+import {
+  collectYarnWorkspacePackages,
+  discoverYarnWorkspaceManifestContents,
+} from '../workspaces/workspace-utils';
+
+function parseResolutions(pkgJsonContent: string): Record<string, string> {
+  try {
+    return JSON.parse(pkgJsonContent).resolutions || {};
+  } catch {
+    return {};
+  }
+}
 
 export async function buildDepGraph(
   root: string,
@@ -75,7 +87,21 @@ export async function buildDepGraph(
           strictOutOfSync: options.strictOutOfSync,
         },
       );
-    case NodeLockfileVersion.YarnLockV2:
+    case NodeLockfileVersion.YarnLockV2: {
+      // When the project is a Yarn workspace root, give the parser every member's
+      // package.json so it can prune dev-only deps of workspace packages consumed as prod
+      // deps. Non-workspace projects yield an empty map and behave exactly as before.
+      const workspacePackages = collectYarnWorkspacePackages(
+        discoverYarnWorkspaceManifestContents(workspaceRootPath),
+      );
+      const yarnV2WorkspaceArgs = Object.keys(workspacePackages).length
+        ? {
+            isWorkspacePkg: false,
+            isRoot: true,
+            rootResolutions: parseResolutions(manifestFileContents),
+            workspacePackages,
+          }
+        : undefined;
       return await lockFileParser.parseYarnLockV2Project(
         manifestFileContents,
         lockFileContents,
@@ -85,7 +111,9 @@ export async function buildDepGraph(
           pruneWithinTopLevelDeps: true,
           strictOutOfSync: options.strictOutOfSync,
         },
+        yarnV2WorkspaceArgs,
       );
+    }
     case NodeLockfileVersion.NpmLockV2:
     case NodeLockfileVersion.NpmLockV3:
       return await lockFileParser.parseNpmLockV2Project(
