@@ -66,6 +66,38 @@ describe('inspect', () => {
       },
     );
 
+    it('GIVEN includeComponentMetadata for an npm project THEN dep-graph nodes carry hash and distribution:url labels', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        'fixtures',
+        'npm',
+        'lock-v2',
+        'simple-app',
+      );
+      process.chdir(fixturePath);
+
+      const withMetadata = await inspect('.', 'package-lock.json', {
+        includeComponentMetadata: true,
+      });
+      const metaNodes = withMetadata.scannedProjects[0].depGraph
+        ?.toJSON()
+        .graph.nodes.filter((node) => node.nodeId !== 'root-node');
+      expect(metaNodes && metaNodes.length).toBeGreaterThan(0);
+      metaNodes?.forEach((node) => {
+        expect(node.info?.labels?.['hash:sha-512']).toMatch(/^[0-9a-f]{128}$/);
+        expect(node.info?.labels?.['distribution:url']).toMatch(/^https:\/\//);
+      });
+
+      // Without the flag the labels must be absent.
+      const withoutMetadata = await inspect('.', 'package-lock.json', {});
+      withoutMetadata.scannedProjects[0].depGraph
+        ?.toJSON()
+        .graph.nodes.forEach((node) => {
+          expect(node.info?.labels?.['hash:sha-512']).toBeUndefined();
+          expect(node.info?.labels?.['distribution:url']).toBeUndefined();
+        });
+    });
+
     it('should throw error trying to scan a pnpm workspace as a simple file', async () => {
       const packageManager = 'pnpm',
         lockFileVersion = '9',

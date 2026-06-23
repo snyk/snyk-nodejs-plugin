@@ -60,6 +60,7 @@ export async function parse(
         includeOptionalDeps: true,
         strictOutOfSync,
         pruneCycles: true,
+        includeComponentMetadata: options.includeComponentMetadata,
       },
     );
   }

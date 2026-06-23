@@ -14,6 +14,13 @@ export function parse(
   targetFile: string,
   options: Options,
 ): Promise<PkgTree> {
+  if (options.includeComponentMetadata) {
+    debug(
+      'includeComponentMetadata is set but resolving via node_modules (no lockfile); ' +
+        'package hash / distribution URL labels are only reported from lockfiles, skipping',
+    );
+  }
+
   if (targetFile.endsWith('yarn.lock')) {
     options.file =
       options.file && options.file.replace('yarn.lock', 'package.json');

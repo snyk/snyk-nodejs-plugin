@@ -66,6 +66,7 @@ export async function processNpmWorkspaces(
     dev?: boolean;
     yarnWorkspaces?: boolean;
     showNpmScope?: boolean;
+    includeComponentMetadata?: boolean;
   },
   targetFiles: string[],
 ): Promise<MultiProjectResultCustom> {
@@ -148,6 +149,7 @@ export async function processNpmWorkspaces(
           includeOptionalDeps: false,
           pruneCycles: true,
           showNpmScope: settings.showNpmScope,
+          includeComponentMetadata: settings.includeComponentMetadata,
         },
       );
 
