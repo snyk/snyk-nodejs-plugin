@@ -7,6 +7,9 @@ import {
   ProjectParseOptions,
 } from 'snyk-nodejs-lockfile-parser';
 import { DepGraph } from '@snyk/dep-graph';
+import * as baseDebug from 'debug';
+
+const debug = baseDebug('snyk-nodejs-plugin');
 
 export async function buildDepGraph(
   root: string,
@@ -38,6 +41,19 @@ export async function buildDepGraph(
     workspaceRootPath,
     'pnpm-workspace.yaml',
   );
+
+  if (
+    options.includeComponentMetadata &&
+    lockfileVersion !== NodeLockfileVersion.NpmLockV2 &&
+    lockfileVersion !== NodeLockfileVersion.NpmLockV3
+  ) {
+    debug(
+      `includeComponentMetadata is set but component-metadata labels ` +
+        `(package hashes / distribution URLs) are not yet produced for ` +
+        `lockfile version ${lockfileVersion}; ` +
+        `only npm package-lock v2/v3 is supported`,
+    );
+  }
 
   switch (lockfileVersion) {
     case NodeLockfileVersion.PnpmLockV5:
