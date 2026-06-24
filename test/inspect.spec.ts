@@ -98,6 +98,44 @@ describe('inspect', () => {
         });
     });
 
+    it('GIVEN includeComponentMetadata for an npm lockfile v1 project THEN depTree nodes carry hash and distribution:url labels', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        'fixtures',
+        'npm',
+        'lock-v1',
+        'mixed-hashes',
+      );
+      process.chdir(fixturePath);
+
+      const result = await inspect('.', 'package-lock.json', {
+        includeComponentMetadata: true,
+      });
+      // npm v1 is parsed via the legacy depTree path, not a DepGraph.
+      const depTree = result.scannedProjects[0].depTree as any;
+      expect(depTree).toBeDefined();
+
+      const accepts = depTree.dependencies['accepts'];
+      expect(accepts.labels['hash:sha-512']).toMatch(/^[0-9a-f]{128}$/);
+      expect(accepts.labels['distribution:url']).toBe(
+        'https://registry.npmjs.org/accepts/-/accepts-1.3.7.tgz',
+      );
+
+      // sha1 integrity (typical of v1 lockfiles) -> hash:sha-1.
+      const ansiRegex = depTree.dependencies['ansi-regex'];
+      expect(ansiRegex.labels['hash:sha-1']).toMatch(/^[0-9a-f]{40}$/);
+      expect(ansiRegex.labels['distribution:url']).toBe(
+        'https://registry.npmjs.org/ansi-regex/-/ansi-regex-2.1.1.tgz',
+      );
+
+      // Without the flag the labels must be absent.
+      const withoutMetadata = await inspect('.', 'package-lock.json', {});
+      const acceptsNoMeta = (withoutMetadata.scannedProjects[0].depTree as any)
+        .dependencies['accepts'];
+      expect(acceptsNoMeta.labels?.['hash:sha-512']).toBeUndefined();
+      expect(acceptsNoMeta.labels?.['distribution:url']).toBeUndefined();
+    });
+
     it('should throw error trying to scan a pnpm workspace as a simple file', async () => {
       const packageManager = 'pnpm',
         lockFileVersion = '9',

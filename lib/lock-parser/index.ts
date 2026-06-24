@@ -71,5 +71,8 @@ export async function parse(
     lockFileFullPath,
     options.dev,
     strictOutOfSync,
+    undefined, // honorAliases
+    undefined, // showNpmScope
+    options.includeComponentMetadata,
   );
 }
