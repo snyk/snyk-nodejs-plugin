@@ -60,6 +60,7 @@ export async function parse(
         includeOptionalDeps: true,
         strictOutOfSync,
         pruneCycles: true,
+        includeComponentMetadata: options.includeComponentMetadata || false,
       },
     );
   }
@@ -70,5 +71,8 @@ export async function parse(
     lockFileFullPath,
     options.dev,
     strictOutOfSync,
+    undefined, // honorAliases
+    undefined, // showNpmScope
+    options.includeComponentMetadata || false,
   );
 }

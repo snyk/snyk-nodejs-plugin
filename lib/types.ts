@@ -17,6 +17,7 @@ export interface Options {
   composerPharIsFine?: boolean;
   systemVersions?: object;
   scanAllUnmanaged?: boolean;
+  includeComponentMetadata?: boolean;
 }
 
 export interface ScannedProjectCustom
