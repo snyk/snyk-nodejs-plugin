@@ -60,7 +60,7 @@ export async function parse(
         includeOptionalDeps: true,
         strictOutOfSync,
         pruneCycles: true,
-        includeComponentMetadata: options.includeComponentMetadata,
+        includeComponentMetadata: options.includeComponentMetadata || false,
       },
     );
   }
@@ -73,6 +73,6 @@ export async function parse(
     strictOutOfSync,
     undefined, // honorAliases
     undefined, // showNpmScope
-    options.includeComponentMetadata,
+    options.includeComponentMetadata || false,
   );
 }

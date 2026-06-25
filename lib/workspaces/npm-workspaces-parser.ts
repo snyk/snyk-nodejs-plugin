@@ -149,7 +149,7 @@ export async function processNpmWorkspaces(
           includeOptionalDeps: false,
           pruneCycles: true,
           showNpmScope: settings.showNpmScope,
-          includeComponentMetadata: settings.includeComponentMetadata,
+          includeComponentMetadata: settings.includeComponentMetadata || false,
         },
       );
 
