@@ -9,6 +9,10 @@ import { MultiProjectResultCustom, ScannedProjectCustom } from '../types';
 import { getFileContents } from '../utils';
 import { NoSupportedManifestsFoundError } from '../errors';
 import { DepGraph } from '@snyk/dep-graph';
+import {
+  collectWorkspaceManifestsByDir,
+  workspacePackagesUnderRoot,
+} from './workspace-utils';
 
 interface YarnWorkspacesMap {
   [packageJsonName: string]: {
@@ -101,6 +105,13 @@ export async function processYarnWorkspaces(
     scannedProjects: [],
   };
 
+  // Read every workspace member's package.json once, indexed by directory. The main loop
+  // reuses these contents, and each parse derives a map of member dependency groups scoped to
+  // its own workspace root so the lockfile parser can prune dev-only dependencies of workspace
+  // packages consumed as production deps. Done before the main loop because a consumer (e.g.
+  // apps/my-app) may be processed before the member it depends on (e.g. libraries/shared-lib).
+  const manifestsByDir = collectWorkspaceManifestsByDir(root, yarnTargetFiles);
+
   let rootWorkspaceManifestContent = {};
   // the folders must be ordered highest first
   for (const directory of Object.keys(yarnTargetFiles)) {
@@ -108,7 +119,10 @@ export async function processYarnWorkspaces(
     let isYarnWorkspacePackage = false;
     let isRootPackageJson = false;
     const packageJsonFileName = pathUtil.join(directory, 'package.json');
-    const packageJson = getFileContents(root, packageJsonFileName);
+    const cachedManifest = manifestsByDir.get(directory);
+    const packageJson = cachedManifest
+      ? { content: cachedManifest.content, fileName: cachedManifest.fileName }
+      : getFileContents(root, packageJsonFileName);
     yarnWorkspacesMap = {
       ...yarnWorkspacesMap,
       ...getWorkspacesMap(packageJson),
@@ -188,6 +202,12 @@ export async function processYarnWorkspaces(
               isRoot: isRootPackageJson,
               rootResolutions:
                 rootWorkspaceManifestContent?.['resolutions'] || {},
+              // Scope the member manifests to this package's own workspace root, so a
+              // same-named package in a different workspace cannot prune this node.
+              workspacePackages: workspacePackagesUnderRoot(
+                manifestsByDir,
+                rootDir,
+              ),
             },
           );
           break;

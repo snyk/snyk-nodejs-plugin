@@ -1,0 +1,7 @@
+{
+  "name": "@acme/app-a",
+  "version": "0.0.0",
+  "dependencies": {
+    "@acme/shared": "workspace:^"
+  }
+}
