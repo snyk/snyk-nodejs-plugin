@@ -45,13 +45,15 @@ export async function buildDepGraph(
   if (
     options.includeComponentMetadata &&
     lockfileVersion !== NodeLockfileVersion.NpmLockV2 &&
-    lockfileVersion !== NodeLockfileVersion.NpmLockV3
+    lockfileVersion !== NodeLockfileVersion.NpmLockV3 &&
+    lockfileVersion !== NodeLockfileVersion.YarnLockV1
   ) {
     debug(
       `includeComponentMetadata is set but component-metadata labels ` +
         `(package hashes / distribution URLs) are not yet produced for ` +
         `lockfile version ${lockfileVersion}; ` +
-        `only npm package-lock v2/v3 is supported`,
+        `only npm package-lock v2/v3 and yarn.lock v1 are supported ` +
+        `(yarn berry is deferred)`,
     );
   }
 
@@ -89,6 +91,7 @@ export async function buildDepGraph(
           includePeerDeps: options.includePeerDeps || false,
           pruneLevel: 'withinTopLevelDeps',
           strictOutOfSync: options.strictOutOfSync,
+          includeComponentMetadata: options.includeComponentMetadata || false,
         },
       );
     case NodeLockfileVersion.YarnLockV2:
@@ -100,6 +103,8 @@ export async function buildDepGraph(
           includeOptionalDeps: options.includeOptionalDeps,
           pruneWithinTopLevelDeps: true,
           strictOutOfSync: options.strictOutOfSync,
+          // Threaded for a uniform API; berry component-metadata labels are deferred (no-op).
+          includeComponentMetadata: options.includeComponentMetadata || false,
         },
       );
     case NodeLockfileVersion.NpmLockV2:

@@ -136,6 +136,63 @@ describe('inspect', () => {
       expect(acceptsNoMeta.labels?.['distribution:url']).toBeUndefined();
     });
 
+    it('GIVEN includeComponentMetadata for a yarn v1 project THEN dep-graph nodes carry hash and distribution:url labels', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        'fixtures',
+        'yarn',
+        'lock-v1',
+        'simple-app',
+      );
+      process.chdir(fixturePath);
+
+      const withMetadata = await inspect('.', 'yarn.lock', {
+        includeComponentMetadata: true,
+      });
+      const metaNodes = withMetadata.scannedProjects[0].depGraph
+        ?.toJSON()
+        .graph.nodes.filter((node) => node.nodeId !== 'root-node');
+      expect(metaNodes && metaNodes.length).toBeGreaterThan(0);
+      metaNodes?.forEach((node) => {
+        expect(node.info?.labels?.['hash:sha-512']).toMatch(/^[0-9a-f]{128}$/);
+        // fragment stripped -> clean tarball URL (no '#').
+        expect(node.info?.labels?.['distribution:url']).toMatch(
+          /^https:\/\/[^#]+$/,
+        );
+      });
+
+      // Without the flag the labels must be absent.
+      const withoutMetadata = await inspect('.', 'yarn.lock', {});
+      withoutMetadata.scannedProjects[0].depGraph
+        ?.toJSON()
+        .graph.nodes.forEach((node) => {
+          expect(node.info?.labels?.['hash:sha-512']).toBeUndefined();
+          expect(node.info?.labels?.['distribution:url']).toBeUndefined();
+        });
+    });
+
+    it('GIVEN includeComponentMetadata for a yarn berry project THEN labels are deferred (absent)', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        'fixtures',
+        'yarn',
+        'lock-v2',
+        'simple-app',
+      );
+      process.chdir(fixturePath);
+
+      const result = await inspect('.', 'yarn.lock', {
+        includeComponentMetadata: true,
+      });
+      result.scannedProjects[0].depGraph
+        ?.toJSON()
+        .graph.nodes.forEach((node) => {
+          expect(node.info?.labels?.['hash:sha-512']).toBeUndefined();
+          expect(node.info?.labels?.['hash:sha-1']).toBeUndefined();
+          expect(node.info?.labels?.['distribution:url']).toBeUndefined();
+        });
+    });
+
     it('should throw error trying to scan a pnpm workspace as a simple file', async () => {
       const packageManager = 'pnpm',
         lockFileVersion = '9',
