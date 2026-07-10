@@ -69,6 +69,7 @@ export async function processYarnWorkspaces(
     dev?: boolean;
     yarnWorkspaces?: boolean;
     showNpmScope?: boolean;
+    includeComponentMetadata?: boolean;
   },
   targetFiles: string[],
 ): Promise<MultiProjectResultCustom> {
@@ -166,6 +167,8 @@ export async function processYarnWorkspaces(
                   ? true
                   : settings.strictOutOfSync,
               showNpmScope: settings.showNpmScope,
+              includeComponentMetadata:
+                settings.includeComponentMetadata || false,
             },
           );
           break;
@@ -182,6 +185,9 @@ export async function processYarnWorkspaces(
                   ? true
                   : settings.strictOutOfSync,
               showNpmScope: settings.showNpmScope,
+              // Threaded for a uniform API; berry component-metadata is deferred (no-op).
+              includeComponentMetadata:
+                settings.includeComponentMetadata || false,
             },
             {
               isWorkspacePkg: true,
