@@ -66,6 +66,27 @@ describe('inspect', () => {
       },
     );
 
+    it('should build valid dep graph for a pnpm 11 multi-document lockfile (env document + dependency document)', async () => {
+      const fixturePath = path.resolve(
+        __dirname,
+        'fixtures',
+        'pnpm',
+        'lock-v9-multidoc',
+        'simple-app',
+      );
+      process.chdir(fixturePath);
+
+      const result = await inspect('.', 'pnpm-lock.yaml', {});
+      expect(result.scannedProjects.length).toEqual(1);
+      const pkgNames = result.scannedProjects[0].depGraph
+        ?.getDepPkgs()
+        .map((pkg) => pkg.name);
+      expect(pkgNames).toContain('is-odd');
+      // env-document packages (pnpm's own toolchain) must not leak in
+      expect(pkgNames).not.toContain('pnpm');
+      expect(pkgNames).not.toContain('@pnpm/exe');
+    });
+
     it('GIVEN includeComponentMetadata for an npm project THEN dep-graph nodes carry hash and distribution:url labels', async () => {
       const fixturePath = path.resolve(
         __dirname,
