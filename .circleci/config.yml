@@ -135,6 +135,7 @@ workflows:
           name: Scan repository for secrets
           context:
             - snyk-bot-slack
+            - prodsec-orb-runtime
           channel: snyk-vuln-alerts-sca
           filters:
             branches:
@@ -144,6 +145,7 @@ workflows:
           name: Perform security scans for PRs
           context:
             - open_source-managed
+            - prodsec-orb-runtime
       - lint:
           name: Lint
           context: nodejs-install
