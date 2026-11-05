@@ -44,8 +44,8 @@
     "lodash.isempty": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "micromatch": "4.0.8",
-    "snyk-nodejs-lockfile-parser": "2.10.4",
-    "snyk-resolve-deps": "4.8.0"
+    "snyk-nodejs-lockfile-parser": "2.10.5",
+    "snyk-resolve-deps": "4.10.2"
   },
   "overrides": {
     "@yarnpkg/core": {
