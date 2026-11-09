@@ -1,0 +1,22 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-BRACES-19963945:
+    - 'micromatch > braces':
+        reason: >-
+          Uncontrolled Recursion in braces@3.0.3 (latest release; Snyk reports
+          Fixed in: none). micromatch@4.0.8 is the latest 4.x and requires braces
+          ^3.0.3, so no upgrade or override fixes it. Fails the 30-day SLA gate
+          on main and every PR. Time-boxed no-fix exception, same as
+          nodejs-lockfile-parser; revisit when braces ships a fix.
+        expires: '2026-12-09T00:00:00.000Z'
+        created: '2026-11-09T00:00:00.000Z'
+    - 'snyk-nodejs-lockfile-parser > micromatch > braces':
+        reason: >-
+          Same braces@3.0.3 no-fix issue via snyk-nodejs-lockfile-parser's
+          micromatch ^4.0.8 dependency; no upgrade path. Revisit when braces
+          ships a fix.
+        expires: '2026-12-09T00:00:00.000Z'
+        created: '2026-11-09T00:00:00.000Z'
+patch: {}
