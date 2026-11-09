@@ -79,5 +79,5 @@ export function parse(
   return resolveNodeDeps(
     root,
     Object.assign({}, options, { noFromArrays: true }),
-  );
+  ) as Promise<PkgTree>;
 }
