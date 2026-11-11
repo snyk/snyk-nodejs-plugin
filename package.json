@@ -26,7 +26,7 @@
   "author": "snyk.io",
   "license": "Apache-2.0",
   "engines": {
-    "node": "^20.18.1 || ^22.13.0 || >=24.0.0"
+    "node": ">=22"
   },
   "files": [
     "dist"
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
-    "@types/node": "^20.4.5",
+    "@types/node": "^22",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "eslint": "^8.48.0",

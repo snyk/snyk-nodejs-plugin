@@ -16,7 +16,7 @@ defaults: &defaults
   parameters:
     node_version:
       type: string
-      default: "24.15.0"
+      default: "22"
   working_directory: ~/snyk-nodejs-plugin
 
 windows_defaults: &windows_defaults
@@ -26,7 +26,7 @@ windows_defaults: &windows_defaults
     name: win/default
 
 test_matrix: &test_matrix
-  node_version: ['20.18.1', '22.22.2', '24.15.0']
+  node_version: ['22', '24', '26']
 
 commands:
   install_deps:
@@ -116,7 +116,7 @@ jobs:
   release:
     <<: *defaults
     docker:
-      - image: cimg/node:24.15.0
+      - image: cimg/node:24  # npm 11+ (Node 24) is needed for OIDC trusted publishing
     steps:
       - checkout
       - install_deps
@@ -148,10 +148,11 @@ workflows:
           context:
             - engines_sca-scanners
             - prodsec-orb-runtime
+          node_version: "24"
       - lint:
           name: Lint
           context: nodejs-install
-          node_version: "lts"
+          node_version: "24"
       - test-windows:
           matrix:
             alias: test-windows
