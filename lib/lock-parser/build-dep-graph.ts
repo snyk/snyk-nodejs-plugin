@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import { load as loadYaml } from 'js-yaml';
 import * as lockFileParser from 'snyk-nodejs-lockfile-parser';
 import {
   NodeLockfileVersion,
@@ -10,6 +11,30 @@ import { DepGraph } from '@snyk/dep-graph';
 import * as baseDebug from 'debug';
 
 const debug = baseDebug('snyk-nodejs-plugin');
+
+// pnpm-workspace.yaml can exist only for pnpm settings (onlyBuiltDependencies,
+// neverBuiltDependencies, and similar). Those files have no `packages` list.
+// A single-project scan is valid unless the file actually names workspace packages.
+export function pnpmWorkspaceDefinesPackages(content: string): boolean {
+  if (content.trim() === '') {
+    return false;
+  }
+
+  let document: unknown;
+  try {
+    document = loadYaml(content);
+  } catch {
+    // Unreadable YAML keeps the previous refusal, so a real workspace is not scanned as one project.
+    return true;
+  }
+
+  if (!document || typeof document !== 'object' || Array.isArray(document)) {
+    return false;
+  }
+
+  const packages = (document as { packages?: unknown }).packages;
+  return Array.isArray(packages) && packages.length > 0;
+}
 
 export async function buildDepGraph(
   root: string,
@@ -61,7 +86,12 @@ export async function buildDepGraph(
     case NodeLockfileVersion.PnpmLockV5:
     case NodeLockfileVersion.PnpmLockV6:
     case NodeLockfileVersion.PnpmLockV9:
-      if (fs.existsSync(workspaceFileFullPath)) {
+      if (
+        fs.existsSync(workspaceFileFullPath) &&
+        pnpmWorkspaceDefinesPackages(
+          fs.readFileSync(workspaceFileFullPath, 'utf-8'),
+        )
+      ) {
         throw new InvalidUserInputError(
           'Both `pnpm-lock.yaml` and `pnpm-workspace.yaml` were found in ' +
             workspaceRootPath +
