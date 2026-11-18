@@ -1,5 +1,7 @@
 import { InvalidUserInputError } from 'snyk-nodejs-lockfile-parser';
 import { inspect } from '../lib/index';
+import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 
 describe('inspect', () => {
@@ -237,5 +239,38 @@ describe('inspect', () => {
         ),
       );
     });
+
+    it.each(['', 'onlyBuiltDependencies:\n  - esbuild\n', 'packages: []\n'])(
+      'scans a single pnpm project when pnpm-workspace.yaml does not list packages (%j)',
+      async (workspaceContents) => {
+        const fixturePath = path.resolve(
+          __dirname,
+          'fixtures',
+          'pnpm',
+          'lock-v9',
+          'simple-app',
+        );
+        const workspaceDir = fs.mkdtempSync(
+          path.join(os.tmpdir(), 'pnpm-config-only-'),
+        );
+        fs.copyFileSync(
+          path.join(fixturePath, 'package.json'),
+          path.join(workspaceDir, 'package.json'),
+        );
+        fs.copyFileSync(
+          path.join(fixturePath, 'pnpm-lock.yaml'),
+          path.join(workspaceDir, 'pnpm-lock.yaml'),
+        );
+        fs.writeFileSync(
+          path.join(workspaceDir, 'pnpm-workspace.yaml'),
+          workspaceContents,
+        );
+        process.chdir(workspaceDir);
+
+        const result = await inspect('.', 'pnpm-lock.yaml', {});
+        expect(result.scannedProjects.length).toEqual(1);
+        expect(result.scannedProjects[0].depGraph?.toJSON()).not.toEqual({});
+      },
+    );
   });
 });
